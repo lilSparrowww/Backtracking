@@ -1,0 +1,277 @@
+# 17. Letter Combinations of a Phone Number
+
+## Problem Statement
+Given a string containing digits from `2-9` inclusive, return **all possible letter combinations** that the number could represent.
+
+A mapping of digits to letters (just like on the telephone buttons) is given below:
+
+- `2` -> `"abc"`
+- `3` -> `"def"`
+- `4` -> `"ghi"`
+- `5` -> `"jkl"`
+- `6` -> `"mno"`
+- `7` -> `"pqrs"`
+- `8` -> `"tuv"`
+- `9` -> `"wxyz"`
+
+Return the answer in **any order**.
+
+---
+
+## Example
+
+### Input
+```java
+digits = "23"
+```
+
+### Output
+```java
+["ad","ae","af","bd","be","bf","cd","ce","cf"]
+```
+
+---
+
+## Intuition
+Each digit can map to multiple letters.
+
+For example:
+
+- `"2"` gives: `a, b, c`
+- `"3"` gives: `d, e, f`
+
+So for `"23"`:
+
+- Pick one letter from `"abc"`
+- Pick one letter from `"def"`
+
+That means we build combinations like:
+
+- `a + d = ad`
+- `a + e = ae`
+- `a + f = af`
+- ...
+- `c + f = cf`
+
+This is a **Backtracking / Recursion** problem because at every digit we try all possible choices.
+
+---
+
+## Approach
+We use a recursive function to build combinations one character at a time.
+
+### Steps:
+1. Store the phone keypad mapping in an array.
+2. Start from index `0`.
+3. For the current digit:
+   - Get its corresponding letters.
+   - Try each letter one by one.
+4. Add the chosen letter to the current string.
+5. Move to the next digit recursively.
+6. Once the current string length becomes equal to `digits.length()`, add it to the answer list.
+7. Backtrack and try the next possible letter.
+
+---
+
+## Dry Run
+
+### Input
+```java
+digits = "23"
+```
+
+### Mapping
+```java
+2 -> "abc"
+3 -> "def"
+```
+
+### Recursion Tree
+```text
+                    ""
+          /         |         \
+         a          b          c
+      /  |  \    /  |  \    /  |  \
+     d   e   f  d   e   f  d   e   f
+```
+
+### Combinations formed
+```java
+ad, ae, af, bd, be, bf, cd, ce, cf
+```
+
+---
+
+## Code (Optimized using StringBuilder)
+
+```java
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        List<String> result = new ArrayList<>();
+
+        if (digits == null || digits.length() == 0) {
+            return result;
+        }
+
+        String[] map = {
+            "",     // 0
+            "",     // 1
+            "abc",  // 2
+            "def",  // 3
+            "ghi",  // 4
+            "jkl",  // 5
+            "mno",  // 6
+            "pqrs", // 7
+            "tuv",  // 8
+            "wxyz"  // 9
+        };
+
+        backtrack(digits, 0, new StringBuilder(), result, map);
+        return result;
+    }
+
+    private void backtrack(String digits, int index, StringBuilder current,
+                           List<String> result, String[] map) {
+
+        // Base Case
+        if (index == digits.length()) {
+            result.add(current.toString());
+            return;
+        }
+
+        String letters = map[digits.charAt(index) - '0'];
+
+        for (int i = 0; i < letters.length(); i++) {
+            current.append(letters.charAt(i));   // choose
+            backtrack(digits, index + 1, current, result, map); // explore
+            current.deleteCharAt(current.length() - 1); // backtrack
+        }
+    }
+}
+```
+
+---
+
+## Code Explanation
+
+### `letterCombinations()`
+- Creates the result list.
+- Handles edge case when input is empty.
+- Stores digit-to-letter mapping.
+- Calls recursive function.
+
+### `backtrack()`
+This function generates all possible combinations.
+
+### Base Case
+```java
+if (index == digits.length()) {
+    result.add(current.toString());
+    return;
+}
+```
+
+When we have processed all digits, the current string becomes one valid answer.
+
+### Recursive Part
+```java
+String letters = map[digits.charAt(index) - '0'];
+```
+
+Gets the letters for the current digit.
+
+Then:
+```java
+for (int i = 0; i < letters.length(); i++) {
+    current.append(letters.charAt(i));
+    backtrack(digits, index + 1, current, result, map);
+    current.deleteCharAt(current.length() - 1);
+}
+```
+
+This does:
+- **Choose** a letter
+- **Explore** further
+- **Backtrack** to try next letter
+
+---
+
+## Time Complexity
+
+### Time
+```text
+O(4^N * N)
+```
+
+Where `N = digits.length()`
+
+Why?
+- Each digit can have at most **4 choices**
+- Total combinations can be around `4^N`
+- Each combination takes `O(N)` to store
+
+### Space
+```text
+O(N)
+```
+
+For recursion stack and current string (excluding output list)
+
+---
+
+## Edge Case
+
+### Input
+```java
+digits = ""
+```
+
+### Output
+```java
+[]
+```
+
+Because no digits means no possible combinations.
+
+---
+
+## Interview Explanation
+If the interviewer asks:
+
+**"How are you solving this?"**
+
+You can say:
+
+> I am using backtracking. Each digit maps to multiple letters like a phone keypad. I recursively choose one letter for the current digit, add it to the current combination, and move to the next digit. When the combination length becomes equal to the number of digits, I add it to the result.
+
+---
+
+## Key Learning
+This is a **classic Backtracking problem**.
+
+### Pattern:
+- Choose
+- Explore
+- Backtrack
+
+This same pattern is used in:
+- Permutations
+- Subsets
+- Combination Sum
+- N-Queens
+- Palindrome Partitioning
+
+---
+
+## Final Takeaway
+Whenever a problem says:
+
+- **Generate all combinations**
+- **Try all possible choices**
+- **Return all possible answers**
+
+You should think of:
+
+```text
+Backtracking
+```
