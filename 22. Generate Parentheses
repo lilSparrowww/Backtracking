@@ -1,0 +1,138 @@
+# 22. Generate Parentheses
+
+## Problem
+Given `n` pairs of parentheses, generate **all combinations of well-formed parentheses**.
+
+### Example
+**Input:**
+`n = 3`
+
+**Output:**
+`["((()))","(()())","(())()","()(())","()()()"]`
+
+---
+
+## Intuition
+
+This problem is about **building valid parentheses strings step by step**.
+
+At every step, we have only **2 choices**:
+
+- Add `"("`
+- Add `")"`
+
+But we **cannot add them randomly**, because not every combination is valid.
+
+For example:
+
+`)()(` → Invalid  
+`(()` → Incomplete  
+`())(` → Invalid  
+
+So instead of generating every possible string and then checking if it is valid, we generate **only valid possibilities** from the beginning.
+
+That is why this problem is solved using **Backtracking**.
+
+---
+
+## Core Idea
+
+We keep track of:
+
+- `curr` → current string being built
+- `open` → number of opening brackets `(` used
+- `close` → number of closing brackets `)` used
+
+---
+
+## Important Rules
+
+### Rule 1
+We can add `"("` only if:
+
+`open < n`
+
+Because total opening brackets can only be `n`.
+
+---
+
+### Rule 2
+We can add `")"` only if:
+
+`close < open`
+
+Because we cannot close more brackets than we have opened.
+
+This is the **most important rule**.
+
+Example:
+
+- Valid: `"(()"`
+- Invalid: `"())"`
+
+If at any point `close > open`, the string becomes invalid and can never be fixed later.
+
+---
+
+## Approach
+
+1. Start with an empty string.
+2. At every step:
+   - Add `"("` if `open < n`
+   - Add `")"` if `close < open`
+3. When the string length becomes `2 * n`, one valid answer is ready.
+4. Add it to the result list.
+5. Continue until all valid combinations are generated.
+
+---
+
+## Why Helper Function is Needed
+
+The main function only gets:
+
+`n`
+
+But while solving recursively, we also need to track:
+
+- current string
+- open count
+- close count
+- answer list
+
+So we use a **helper function** to carry these changing values during recursion.
+
+---
+
+## Java Code
+
+```java
+import java.util.*;
+
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList<>();
+        
+        solve("", 0, 0, n, ans);
+        
+        return ans;
+    }
+
+    private void solve(String curr, int open, int close, int n, List<String> ans) {
+        
+        // Base Case
+        if (curr.length() == 2 * n) {
+            ans.add(curr);
+            return;
+        }
+
+        // Add opening bracket if possible
+        if (open < n) {
+            solve(curr + "(", open + 1, close, n, ans);
+        }
+
+        // Add closing bracket if valid
+        if (close < open) {
+            solve(curr + ")", open, close + 1, n, ans);
+        }
+    }
+}
