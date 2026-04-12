@@ -1,0 +1,73 @@
+# 📌 93. Restore IP Addresses (Backtracking)
+
+---
+
+## 🧠 Problem Summary
+Given a string containing only digits, return all possible valid IP address combinations.
+
+---
+
+## 📏 Rules for Valid IP
+Each IP consists of **4 parts**, and each part must:
+- Be between `0` and `255`
+- Not contain leading zeros
+  - ✅ "0", "10"
+  - ❌ "00", "01"
+
+---
+
+## 🚀 Approach (Backtracking + Path List)
+
+- We try to split the string into **4 valid parts**
+- At each step:
+  - Take `1 to 3` digits
+  - Validate the segment
+  - Add to path → recurse → backtrack
+
+---
+
+## 🧩 Key Idea
+
+👉 Build the IP **part by part (like combinations)**  
+👉 Stop when:
+- Path size = 4
+- String is fully used
+
+---
+
+## ✅ Java Code
+
+```java
+class Solution {
+    public List<String> restoreIpAddresses(String s) {
+        List<String> result = new ArrayList<>();
+        backtrack(s, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void backtrack(String s, int ind, List<String> path, List<String> result) {
+        
+        // Base case: 4 parts formed
+        if (path.size() == 4) {
+            if (ind == s.length()) {
+                result.add(String.join(".", path));
+            }
+            return;
+        }
+
+        // Try segments of length 1 to 3
+        for (int i = 1; i <= 3; i++) {
+            if (ind + i > s.length()) break;
+
+            String part = s.substring(ind, ind + i);
+
+            // Validation
+            if ((part.startsWith("0") && part.length() > 1) || Integer.parseInt(part) > 255)
+                continue;
+
+            path.add(part);                         // choose
+            backtrack(s, ind + i, path, result);    // explore
+            path.remove(path.size() - 1);           // un-choose
+        }
+    }
+}
