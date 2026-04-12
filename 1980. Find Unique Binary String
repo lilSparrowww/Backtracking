@@ -1,0 +1,172 @@
+# 🔢 1980. Find Unique Binary String (Java)
+
+## 🔹 Problem
+Given an array `nums` containing `n` unique binary strings, each of length `n`, return a binary string of length `n` that does NOT appear in `nums`.
+
+---
+
+## 🔹 Example
+
+Input:
+nums = ["01","10"]
+
+Output:
+"11"
+(Any valid missing string is acceptable, e.g., "00")
+
+---
+
+## 🔹 Intuition
+
+- Total possible binary strings of length `n` = `2^n`
+- Given only `n` strings
+
+👉 So at least **one string is always missing**
+
+Goal:
+Find any one such missing string efficiently
+
+---
+
+## 🔹 Optimal Approach (Diagonal Trick)
+
+👉 Construct a new string by flipping diagonal elements
+
+```
+result[i] = flip(nums[i][i])
+```
+
+- If `nums[i][i] == '0'` → take `'1'`
+- If `nums[i][i] == '1'` → take `'0'`
+
+---
+
+## 🔹 Why This Works
+
+- Result differs from:
+  - `nums[0]` at index 0
+  - `nums[1]` at index 1
+  - ...
+- So it is guaranteed to be **different from every string**
+
+---
+
+## 🔹 Example
+
+nums = ["01","10"]
+
+Diagonal:
+nums[0][0] = '0' → '1'  
+nums[1][1] = '0' → '1'  
+
+Result = "11" ✅
+
+---
+
+## 🔹 Java Code (Optimal)
+
+```java
+class Solution {
+    public String findDifferentBinaryString(String[] nums) {
+        int n = nums.length;
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            char ch = nums[i].charAt(i);
+
+            if (ch == '0') {
+                result.append('1');
+            } else {
+                result.append('0');
+            }
+        }
+
+        return result.toString();
+    }
+}
+```
+
+---
+
+## 🔹 Time Complexity
+
+O(n)
+
+- Single pass
+
+---
+
+## 🔹 Space Complexity
+
+O(n)
+
+- Output string
+
+---
+
+## 🔹 Brute Force Approach (For Understanding)
+
+1. Generate all binary strings of length `n`
+2. Store `nums` in HashSet
+3. Return first missing string
+
+Time: O(2^n)  
+Space: O(n)
+
+---
+
+## 🔹 Backtracking Approach (Early Stop)
+
+- Generate strings recursively
+- Stop as soon as a missing string is found
+
+Time: O(2^n) worst case  
+Space: O(n)
+
+---
+
+## 🔹 Key Concepts
+
+- Diagonal construction (Cantor’s idea)
+- Guaranteed uniqueness
+- No need to generate all combinations
+
+---
+
+## 🔹 Edge Cases
+
+- n = 1 → ["0"] → return "1"  
+- nums contains all but one string → still works  
+- order of input does not matter  
+
+---
+
+## 🔹 Practice Examples
+
+["01","10"] → "11"  
+["00","01"] → "10"  
+["000","001","010","011","100","101","110"] → "111"  
+["111","011","001"] → "000"  
+["0"] → "1"  
+["1"] → "0"  
+
+---
+
+## 🔹 Pattern
+
+Construct answer instead of generating all possibilities
+
+---
+
+## 🔹 Important Insight
+
+- Instead of searching → **build a guaranteed unique string**
+- Much faster than brute force
+
+---
+
+## 🔹 Related Problems
+
+- Missing Number  
+- First Missing Positive  
+- Set Mismatch  
