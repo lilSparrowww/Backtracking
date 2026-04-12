@@ -1,0 +1,41 @@
+# 40. Combination Sum II
+
+## Approach: Backtracking + Sorting
+
+### Idea
+- Sort array to handle duplicates
+- Use each element only once
+- Skip duplicates at same recursion level
+
+### Steps
+1. Sort array
+2. If target == 0 → add result
+3. Loop from index → n
+4. Skip duplicates: (i > start && nums[i] == nums[i-1])
+5. Recurse with i + 1
+
+## Code
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtrack(candidates, target, 0, new ArrayList<>(), res);
+        return res;
+    }
+
+    private void backtrack(int[] nums, int target, int start, List<Integer> path, List<List<Integer>> res) {
+        if (target == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i-1]) continue;
+            if (nums[i] > target) break;
+
+            path.add(nums[i]);
+            backtrack(nums, target - nums[i], i + 1, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+}
