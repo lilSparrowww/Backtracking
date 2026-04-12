@@ -1,0 +1,165 @@
+# 🔢 46. Permutations (Java)
+
+## 🔹 Problem
+Given an array `nums` of distinct integers, return all possible permutations.
+
+A permutation is a rearrangement of elements where **order matters**.
+
+---
+
+## 🔹 Example
+
+Input:
+nums = [1,2,3]
+
+Output:
+[
+ [1,2,3],
+ [1,3,2],
+ [2,1,3],
+ [2,3,1],
+ [3,1,2],
+ [3,2,1]
+]
+
+---
+
+## 🔹 Intuition
+
+- For permutations, **every element can go in every position**
+- We fix one position at a time
+- Swap elements to generate all arrangements
+
+👉 Key Idea:
+Fix → Recurse → Backtrack (swap back)
+
+---
+
+## 🔹 Approach (Swap Method)
+
+1. Start from index `i = 0`
+2. Swap current index with every index `j ≥ i`
+3. Recursively fix next index (`i + 1`)
+4. Backtrack by swapping back
+
+---
+
+## 🔹 Java Code (Swap-Based)
+
+```java
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        permuteHelper(nums, 0, res);
+        return res;
+    }
+
+    private void permuteHelper(int[] nums, int i, List<List<Integer>> res) {
+        if (i == nums.length) {
+            List<Integer> permutation = new ArrayList<>();
+            for (int num : nums) permutation.add(num);
+            res.add(permutation);
+            return;
+        }
+
+        for (int j = i; j < nums.length; j++) {
+            swap(nums, i, j);
+            permuteHelper(nums, i + 1, res);
+            swap(nums, i, j); // backtrack
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+```
+
+---
+
+## 🔹 Dry Run (nums = [1,2,3])
+
+Start: [1,2,3]
+
+i = 0  
+→ swap(0,0) → [1,2,3]  
+→ swap(1,1) → [1,2,3] → [1,2,3]  
+→ swap(1,2) → [1,3,2]  
+
+→ swap(0,1) → [2,1,3]  
+→ generate → [2,1,3], [2,3,1]  
+
+→ swap(0,2) → [3,2,1]  
+→ generate → [3,2,1], [3,1,2]  
+
+---
+
+## 🔹 Key Concepts
+
+- `i` → current index to fix  
+- `j` → index to swap with  
+- Swap → recurse → swap back  
+- Base case → `i == nums.length`
+
+---
+
+## 🔹 Time Complexity
+
+O(n!)
+
+- Total permutations = n!
+
+---
+
+## 🔹 Space Complexity
+
+O(n)
+
+- Recursion stack
+
+---
+
+## 🔹 Edge Cases
+
+- [1] → [[1]]  
+- [] → []  
+
+---
+
+## 🔹 Practice Examples
+
+[1,2] → [[1,2],[2,1]]  
+[1,2,3] → 6 permutations  
+[1,2,3,4] → 24 permutations  
+[0,1] → [[0,1],[1,0]]  
+[-1,2,3] → valid permutations  
+[5] → [[5]]  
+
+---
+
+## 🔹 Pattern
+
+Backtracking Template:
+
+swap → recurse → swap back
+
+---
+
+## 🔹 Important Insight
+
+- Permutations → **order matters**
+- No need for `visited[]` in swap method
+- More space-efficient than using `contains()`
+
+---
+
+## 🔹 Related Problems
+
+- Permutations II (with duplicates)  
+- Next Permutation  
+- Subsets  
+- Combination Sum  
