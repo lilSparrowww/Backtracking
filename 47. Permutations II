@@ -1,0 +1,192 @@
+# 🔢 47. Permutations II (Java)
+
+## 🔹 Problem
+Given an array `nums` that may contain duplicates, return all unique permutations.
+
+---
+
+## 🔹 Example
+
+Input:
+nums = [1,1,2]
+
+Output:
+[
+ [1,1,2],
+ [1,2,1],
+ [2,1,1]
+]
+
+---
+
+## 🔹 Intuition
+
+- Same as permutations, but we must **avoid duplicates**
+- Key challenge: handling repeated elements
+
+👉 Idea:
+- Sort the array
+- Use `visited[]` to track used elements
+- Skip duplicates intelligently
+
+---
+
+## 🔹 Approach (Backtracking + Visited)
+
+1. Sort the array → helps detect duplicates
+2. Use a `visited[]` array
+3. For each element:
+   - Skip if already used
+   - Skip duplicates using condition
+4. Build permutation recursively
+5. Backtrack after each step
+
+---
+
+## 🔹 Duplicate Skipping Rule (IMPORTANT)
+
+```java
+if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])
+    continue;
+```
+
+👉 Meaning:
+- If current element is same as previous
+- AND previous was NOT used in this position
+- Then skip to avoid duplicate permutation
+
+---
+
+## 🔹 Java Code
+
+```java
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> current = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+
+        backtrack(nums, visited, current, result);
+        return result;
+    }
+
+    private void backtrack(int[] nums, boolean[] visited,
+                           List<Integer> current, List<List<Integer>> result) {
+
+        if (current.size() == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+
+            // skip duplicates
+            if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
+                continue;
+            }
+
+            if (!visited[i]) {
+                visited[i] = true;
+                current.add(nums[i]);
+
+                backtrack(nums, visited, current, result);
+
+                current.remove(current.size() - 1);
+                visited[i] = false; // backtrack
+            }
+        }
+    }
+}
+```
+
+---
+
+## 🔹 Dry Run (nums = [1,1,2])
+
+Sorted: [1,1,2]
+
+Start:
+
+→ pick 1 (index 0)  
+→ pick 1 (index 1) → pick 2 → [1,1,2]  
+
+→ backtrack  
+→ pick 2 → pick 1 → [1,2,1]  
+
+→ skip duplicate when needed  
+
+→ pick 2 → pick 1 → pick 1 → [2,1,1]  
+
+---
+
+## 🔹 Key Concepts
+
+- `visited[]` → track used elements  
+- sorting → required for duplicate handling  
+- duplicate condition → prevents same permutations  
+- backtracking → choose → explore → unchoose  
+
+---
+
+## 🔹 Time Complexity
+
+O(n!)
+
+- Generating permutations
+
+---
+
+## 🔹 Space Complexity
+
+O(n)
+
+- recursion stack + visited array
+
+---
+
+## 🔹 Edge Cases
+
+- [1,1] → [[1,1]]  
+- [1] → [[1]]  
+- [] → []  
+
+---
+
+## 🔹 Practice Examples
+
+[1,1,2] → 3 permutations  
+[1,2,2] → 3 permutations  
+[1,1,1] → 1 permutation  
+[1,2,3] → 6 permutations  
+[2,2,3] → 3 permutations  
+[1] → [[1]]  
+
+---
+
+## 🔹 Pattern
+
+Backtracking Template:
+
+choose → explore → unchoose  
++ duplicate skipping condition
+
+---
+
+## 🔹 Important Insight
+
+- Sorting groups duplicates together  
+- `!visited[i-1]` ensures correct ordering of duplicates  
+- Prevents generating duplicate permutations
+
+---
+
+## 🔹 Related Problems
+
+- Permutations (without duplicates)  
+- Subsets II  
+- Combination Sum II  
+- Letter Case Permutation  
