@@ -1,0 +1,68 @@
+# 🔥 Backtracking Patterns – LeetCode Notes
+
+---
+
+# 📌 967. Numbers With Same Consecutive Differences
+
+## 🧠 Problem Summary
+Given two integers `n` and `k`, return all non-negative integers of length `n` such that the absolute difference between every two consecutive digits is `k`.
+
+---
+
+## 🚀 Approach (Backtracking / DFS)
+
+- Build numbers **digit by digit**
+- Start from digits `1 → 9` (no leading zero)
+- At each step:
+  - Next digit = `lastDigit + k`
+  - Next digit = `lastDigit - k`
+- Continue until length becomes `n`
+
+---
+
+## ⚠️ Important Points
+- If `k == 0`, avoid duplicate paths
+- Digits must be between `0 → 9`
+- Special case: if `n == 1`, return `0 → 9`
+
+---
+
+## ✅ Java Code
+
+```java
+class Solution {
+    public int[] numsSameConsecDiff(int n, int k) {
+        List<Integer> result = new ArrayList<>();
+
+        if (n == 1) {
+            for (int i = 0; i <= 9; i++) result.add(i);
+        } else {
+            for (int i = 1; i <= 9; i++) {
+                dfs(n - 1, k, i, result);
+            }
+        }
+
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
+    }
+
+    private void dfs(int remaining, int k, int num, List<Integer> result) {
+        if (remaining == 0) {
+            result.add(num);
+            return;
+        }
+
+        int last = num % 10;
+
+        if (last + k <= 9) {
+            dfs(remaining - 1, k, num * 10 + (last + k), result);
+        }
+
+        if (k != 0 && last - k >= 0) {
+            dfs(remaining - 1, k, num * 10 + (last - k), result);
+        }
+    }
+}
